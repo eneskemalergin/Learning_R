@@ -7,6 +7,10 @@ output: html_document
 
 ## R Sources
 
+# Codeschool
+  <link>http://tryr.codeschool.com/levels/1/challenges/3</link>
+# Data Camp
+  <link>https://www.datacamp.com/courses/introduction-to-r</link>
 # Quick R
  <link>www.statmethods.net</link>
 # R Cookbook
