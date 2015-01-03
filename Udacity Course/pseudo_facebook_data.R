@@ -82,3 +82,32 @@ qplot(x = tenure/365, data = pf, binwidth = 1, color = I('black'), fill = I('#F7
 
 
 qplot(x = tenure, data = pf, binwidth = 30, color = I('black'), fill = I('#099DD9'))
+
+# Labeling the Plots 
+# Labels make our plots more understandable...
+qplot(x = tenure/365, data = pf, xlab = "Number of years using Facebook", ylab = "Number of users in sample", color = I("black"), fill = I("#F79324")) +
+  scale_x_continuous(breaks = seq(1,7,1), lim = c(0,7))
+
+# Create a histogram of user ages
+qplot(x = age, data = pf, binwidth = 1, 
+      color = I('black'), fill = I('#5760a8')) +
+  scale_x_discrete(breaks = seq(0,113,5))
+# All about age...
+summary(pf$age)
+
+# Transforming data Solutions
+install.packages("gridExtra")
+library(grid)
+library(gridExtra)
+
+p1 <- qplot(x = friend_count, data = pf)
+p2 <- qplot(x = log10(friend_count +1), data = pf) # Log is better than others
+p3 <- qplot(x = sqrt(friend_count), data = pf)
+
+grid.arrange(p1, p2 ,p3 ,ncol = 1)
+# Another way to create 3 histograms
+q1 <- ggplot(aes(x = friend_count), data = pf) + geom_histogram()
+q2 <- q1 + scale_x_log10()
+q3 <- q1 + scale_x_sqrt()
+
+grid.arrange(q1, q2, q3, ncol = 1)
