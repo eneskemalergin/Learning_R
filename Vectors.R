@@ -1,6 +1,13 @@
 # Vectors
 "Vectors are one-dimension arrays that can hold numeric data,
   character data, or logical data."
+# A variable with a single value(4.3) is often known as a scalar, but in 
+# R a scalar is a vector of length 1.
+# Vectors could have length 0 and this can be useful in writing functions:
+y <- 4.3
+z <- y[-1]
+length(z)
+#[1] 0
 # a vector is a simple tool to store data
 
 # We create a vector using combine function c()
@@ -9,6 +16,12 @@
 numeric_vector <- c(1,10,49)
 character_vector <- c("a","b","c")
 boolean_vector <- c(TRUE, FALSE, TRUE)
+# Or we can use the sequence of values for integer using :(colon)
+y <- 10:16 # Is same as;
+y <- c(10,11,12,13,14,15,16)
+# Scan() function
+"Or we can enter the number from the keybord to have the same value before"
+y < scan()
 
 # Poker winnings from Monday to Friday
 poker_vector <- c(140,-50,20,-120,240)
