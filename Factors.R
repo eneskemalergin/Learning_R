@@ -57,8 +57,10 @@ speed_vector <- c("Fast","Slow","Slow","Fast","Ultra-fast")
 factor_speed_vector <- factor(speed_vector, ordered=TRUE, levels=c("Slow","Fast","Ultra-fast")) 
 factor_speed_vector
 summary(factor_speed_vector) 
+# Another way to make factor ordered we use ordered() function
+factor_speed_vector <- ordered(speed_vector, levels = c("Slow","Fast","Ultra-fast"))
 # Comparing Ordered Factors
 compare_them <- factor_speed_vector[2] > factor_speed_vector[5] 
-
+    
 # Is data analyst 2 faster than data analyst 5?
 compare_them
