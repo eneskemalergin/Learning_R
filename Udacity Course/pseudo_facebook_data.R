@@ -111,3 +111,68 @@ q2 <- q1 + scale_x_log10()
 q3 <- q1 + scale_x_sqrt()
 
 grid.arrange(q1, q2, q3, ncol = 1)
+# Following 5 line of code is adding a scaling layer
+logScale <- qplot(x = log10(friend_count), data = pf)
+countScale <- ggplot(aes(x = friend_count), data = pf)+
+  geom_histogram() +
+  scale_x_log10()
+grid.arrange(logScale, countScale, ncol = 2)
+
+# Why we are scaling it?
+# Sometimes we could get a left or right tailed histogram, and we could 
+# not get true information, we should scale it with mathematical 
+# tools. We used here log10 it gives us almost normally distributed histogram
+
+qplot(x = friend_count, data = pf, binwidth = 0.25) + 
+  scale_x_log10()
+# Remainding what variables that we have 
+names(pf)
+
+# Seeing the likes of in tems of gender in Facebook
+qplot(x = www_likes, data = subset(pf, !is.na(gender)),
+      geom = "freqpoly", color = gender)+
+  scale_x_continuous() +
+  scale_x_log10() 
+
+# Gives us total likes of men, and women
+by(pf$www_likes, pf$gender, sum)
+# Gives all statistical info about www_likes in terms of gender
+by(pf$www_likes, pf$gender, summary)
+
+# Creates a box plot with gender and friend_count varibles
+qplot(x = gender, y = friend_count,
+      data = subset(pf, !is.na(gender)),
+      geom = "boxplot")
+# The little box is our good data
+# Other dots are outliers, 
+# We will get rid of the outliers to focus on good data
+# First way
+qplot(x = gender, y = friend_count,
+      data = subset(pf, !is.na(gender)),
+      geom = "boxplot", ylim = c(0,1000)) 
+# Second way
+qplot(x = gender, y = friend_count,
+      data = subset(pf, !is.na(gender)),
+      geom = "boxplot") +
+  scale_y_continuous(limits = c(0, 1000))
+# Third way
+qplot(x = gender, y = friend_count,
+      data = subset(pf, !is.na(gender)),
+      geom = "boxplot") +
+  coord_cartesian(ylim = c(0,1000))
+
+# We should take a closer look to see more detailed
+
+qplot(x = gender, y = friend_count,
+      data = subset(pf, !is.na(gender)),
+      geom = "boxplot") +
+  coord_cartesian(ylim = c(0,250))
+
+by(pf$friend_count, pf$gender, summary)
+
+# Who made more friend request?
+qplot(x = gender, y = friendships_initiated,
+      data = subset(pf, !is.na(gender)), geom = 'boxplot') +
+  coord_cartesian(ylim = c(0, 150))
+by(pf$friendships_initiated, pf$gender, summary)
+
