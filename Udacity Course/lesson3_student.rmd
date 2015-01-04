@@ -262,7 +262,20 @@ Response:
 #### Write about some ways that you can verify your answer.
 Response:
 ```{r Friend Requests by Gender}
+# We should take a closer look to see more detailed
 
+qplot(x = gender, y = friend_count,
+      data = subset(pf, !is.na(gender)),
+      geom = "boxplot") +
+  coord_cartesian(ylim = c(0,250))
+
+by(pf$friend_count, pf$gender, summary)
+
+# Who made more friend request?
+qplot(x = gender, y = friendships_initiated,
+      data = subset(pf, !is.na(gender)), geom = 'boxplot') +
+  coord_cartesian(ylim = c(0, 150))
+by(pf$friendships_initiated, pf$gender, summary)
 ```
 
 Response:
