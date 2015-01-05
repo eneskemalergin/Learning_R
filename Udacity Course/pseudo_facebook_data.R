@@ -176,3 +176,18 @@ qplot(x = gender, y = friendships_initiated,
   coord_cartesian(ylim = c(0, 150))
 by(pf$friendships_initiated, pf$gender, summary)
 
+# This statement checks the status for mobile_likes variable
+summary (pf$mobile_likes)
+# We have seen that there is a lot of 0s in the data for this variable
+# If we put this summary we get different result
+summary(pf$mobile_likes > 0) # It refers to how many false how many True
+# It allows us to see how many 0s in there
+# As a result we have 35056 people's result 0
+
+mobile_check_in <- NA
+pf$mobile_check_in <- ifelse(pf$mobile_likes > 0, 1, 0)
+pf$mobile_check_in <- factor(pf$mobile_check_in)
+
+summary(pf$mobile_check_in)
+# Gets the percentage of using mobile
+sum(pf$mobile_check_in == 1)/length(pf$mobile_check_in) 
