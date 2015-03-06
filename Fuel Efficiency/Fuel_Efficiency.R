@@ -1,4 +1,5 @@
-# Automobile Fuel Efficiency Analysis
+# Automobile Fuel Efficiency Analysis by Enes Kemal Ergin
+# Date: 03/05/15
 
 # If they are not already installed use install.packages("name")
 library(plyr)
@@ -89,3 +90,38 @@ ggplot(gasCars, aes(displ, comb08)) + geom_point() +geom_smooth()
 avgCarSize <- ddply(gasCars, ~year, summarise, avgDispl = mean(displ))
 ggplot(avgCarSize, aes(year, avgDispl)) + geom_point() + geom_smooth() +
   xlab("Year") + ylab("Average engine displacement (1)")
+# The Average engine displacement has decresed substantially since  2008
+
+byYear <- ddply(gasCars, ~year, summarise, avgMPG = mean(comb08), avgDispl = mean(displ))
+head(byYear)
+
+byYear2 <- melt(byYear, id = "year")
+levels(byYear2$variable) <- c("Average MPG", "Avg engine displacement")
+head(byYear2)
+
+# Appends two graphs into one xy coordinate system
+ggplot(byYear2, aes(year, value)) + geom_point() + geom_smooth() +
+  facet_wrap(~variable, ncol = 1, scales = "free_y") + xlab("Year") + ylab("")
+# Conjectures:
+  # Engine Sizes have generally increased until 2008 with sudden increase between 2006 and 2008
+  # Since 2009, there has been a decrease in the average car size, which partially explain the increase in fuel efficiency
+
+# The years 2006 2008 are interesting
+  # though the average engine size increased quite suddenly, the MPG remained roughly tthe same
+  #   as in previous years. This seeming discrepancy might require more investigation.
+
+
+gasCars4 <- subset(gasCars, cylinders == "4") # Subsets 4 cylinder gas cars
+ggplot(gasCars4, aes(factor(year), comb08)) + geom_boxplot() +
+  facet_wrap(~trany2, ncol = 1) + theme(axis.text.x = element_text(angle = 45)) +
+  labs(x = "Year", y = "MPG")
+# It appears that manual transmissions are more efficient than automatic transmissions
+
+
+# Change in propotion of manual cars available each year
+ggplot(gasCars4, aes(factor(year), fill = factor(trany2))) + 
+  geom_bar(position = "fill") + labs(x = "Year", y = "Propotion of Cars", fill = "Transmission")+
+  theme(axis.text.x = element_text(angle = 45)) + geom_hline(yintercept = 0.5,
+                                                             linetype = 2)
+# but recent years' automatic cars has gone further than manual, so we should inspect makes and models also.
+
