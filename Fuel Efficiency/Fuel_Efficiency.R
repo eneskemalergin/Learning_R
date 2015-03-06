@@ -123,5 +123,24 @@ ggplot(gasCars4, aes(factor(year), fill = factor(trany2))) +
   geom_bar(position = "fill") + labs(x = "Year", y = "Propotion of Cars", fill = "Transmission")+
   theme(axis.text.x = element_text(angle = 45)) + geom_hline(yintercept = 0.5,
                                                              linetype = 2)
-# but recent years' automatic cars has gone further than manual, so we should inspect makes and models also.
 
+# but recent years' automatic cars has gone further than manual, so we should inspect makes and models also.
+# Investigate the makes and models of automobiles and how they have changed over time
+
+# freq of makes and models of cars concantrated on 4-cylinders
+carsMake <- ddply(gasCars4, ~year, summarise, numberOfMakes = length(unique(make)))
+ggplot(carsMake, aes(year, numberOfMakes)) + geom_point() + labs(x = "Year", y = "Number of available makes") +
+  ggtitle("Four cylinder cars")
+
+
+uniqMakes <- dlply(gasCars4, ~year, function(x)
+  unique(x$make))
+
+commonMakes <- Reduce(intersect, uniqMakes)
+commonMakes
+
+carsCommonMakes4 <- subset(gasCars4, make %in% commonMakes)
+avgMPG_commonMakes <- ddply(carsCommonMakes4, ~year + make, summarise,
+                            avgMPG = mean(comb08))
+ggplot(avgMPG_commonMakes, aes(year,avgMPG)) + geom_line() + 
+  facet_wrap(~make, nrow = 3)
