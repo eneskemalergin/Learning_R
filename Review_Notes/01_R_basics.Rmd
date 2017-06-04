@@ -1,0 +1,359 @@
+---
+title: "R Basics"
+author: "Enes Kemal Ergin"
+date: "6/3/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Ground Rules for Basics
+- With vectors R allows to use basic math operations element-vise:
+```{r}
+die <- 1:6 # Creating a vector
+die
+
+die + 10 # Adds 1 to all vector elements 
+die - 1 # Removes 1 from all vector elements
+die / 2 # element wise division
+die * 2 # element wise multiplication
+```
+
+- **Vector Recyling**: If we perform mathematical operations with two non-same size vectors the short one keeps repeated until it evens the size with longer vector.
+
+```{r}
+1:2
+4:9
+1:2 - 4:9
+```
+
+- For matrix multiplication in R we use ```%*%``` for inner multiplication and ```%o%``` for outer multiplication. 
+
+```{r}
+die <- 1:6
+
+die %*% die # Inner matrix multiplication
+
+die %o% die # Outer matrix multiplication
+
+```
+
+- Some built-in functions to emphasize, but many more available to lookup from internet;
+
+```{r}
+round(3.1)   # Rounds the closer end (floor or ceil)
+factorial(5) # Takes the factorial of the argument
+mean(1:6)    # Returns the mean of the given argument 
+
+
+# sample function takes two arguments vector and size 
+# x allows us to define the range where to choose from
+# and size determines how many random number to return
+sample(x = 1:6, size = 2)  
+```
+
+- Function can take several or none arguments to learn which arguments we can pass and their name as well we can check with ```args()``` function
+
+```{r}
+args(sample)
+```
+
+- Function can have some arguments that have default value like we have in sample, replace and prob. We don't have to pass those arguments when we call but if we do our value will overwrite the default.
+- Creating our own functions is easy with following syntax:
+
+```{r}
+# We assing function to a name holder
+# If want to allow function to take parameters add 
+# them in between paranthesises
+my_function <- function() {
+  # Here is function body
+    # Indentation makes life easier!
+}
+```
+
+```{r}
+roll <- function(bones = 1:6){
+  dice <- sample(bones, size=2, replace = TRUE)
+  sum(dice)
+}
+
+roll()
+```
+
+## Repetition and Visualization
+- Installing packages: ```install.packages("name")```
+- Calling installed library to use: ```library(name)```
+```{r}
+library("ggplot2")
+x <- seq(from = -5, to = 5, by = 0.01)
+y <- sin(x)
+qplot(x, y) # Dense Scatter Plot
+```
+
+```{r}
+x2 <- c(1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4)
+qplot(x2, binwidth = 1) # Plotting an histogram
+```
+- ```replicate()``` function is easier to repeat same task over and over.
+
+```{r}
+replicate(10, roll()) # We are replicating roll function 10 times 
+```
+- Let's test if our dices are fair, by plotting 10000 experiment and see if it's normal distribution:
+```{r}
+rolls <- replicate(10000, roll())
+qplot(rolls, binwidth = 1)
+```
+
+## Data Types in Nutshell
+
+### Vectors
+- **Atomic vector** is just vector of data like we used in our examples before. ```c()``` function groups the values into a vector.
+
+```{r}
+vec <- c(1,2,3,4,5) # 1:5 will do same
+vec
+is.vector(vec) # Check if is vector
+```
+- If store single value R stores it as vector as well, it will simply be vector with length 1
+
+```{r}
+a <- 1
+is.vector(a) # Checks if vector
+length(a) # Returns the length of the value passed
+```
+
+- To store integer in R, add ```L``` next to the number, otherwise it will recognize as double type value.
+```{r}
+a <- 1L
+b <- 1
+typeof(a) # Shows the type 
+typeof(b)
+```
+> Careful!: Some function might refer double as numericals....
+
+- Character type stores text values
+- Logical type is Boolean TRUE, and FALSE 
+- We can attach attributes to the vectors or any R object it will be like metadata that is not processed or executed by the R. Just for extra information. ```attributes()``` function will show if have.
+- names, dimensions and classes are the most common attributes to give.
+
+```{r}
+die
+names(die) <- c("one", "two", "three", "four", "five", "six")
+names(die)
+attributes(die)
+```
+
+- Assigned attributes are not going to effect the values when doing math operation or other changes in direct values.
+
+```{r}
+die + 1
+
+# We can also remove the names by assigning NULL
+names(die) <- NULL
+die
+```
+
+- We can add dimensionality feature to the vector and make it matrix by assigning dim attribute:
+
+```{r}
+dim(die) <- c(2, 3) # 2 rows 3 columns
+die # dim attribute transforms vector into n dim matrix , 2 dimension in this case
+```
+
+### Matrices
+- Storing value in 2 dimensional array
+- give vector to a matrix function and specify nrows:
+
+```{r}
+die <- 1:6
+m <- matrix(die, nrow = 2) # Matrix Function
+m
+```
+- matrix function by default fills the matrix column by column, if want to change it, just pass ```byrow = TRUE```
+
+### Arrays
+- ```array()``` creates n-dimensional array 
+- not as customizable as ```matrix()``` function
+```{r}
+ar <- array(c(11:14, 21:24, 31:34), dim = c(2, 2, 3))
+ar
+```
+
+### Factors
+- Way of storing categorical information
+- It can only have certain values, like gender(male, female)
+- The values have their own ordering
+- To create factors we pass vector into ```factor()``` function
+- Function takes the values and store them as integer, (one-hot encoding -kind of-)
+- R will add levels and class attribute to the integer stored vector
+
+```{r}
+gender <- factor(c("male", "female", "female", "male"))
+typeof(gender)
+attributes(gender)
+```
+- To show how exactly factors are stored:
+```{r}
+gender
+
+unclass(gender)
+```
+- Factors are useful when fitting categorical data to a statistical mode because it's already been coded as integers. 
+
+### Lists
+- List are grouping together different objects, we can add vectors, factors inside the lists
+```{r}
+list1 <- list(100:110, "R", list(TRUE, FALSE))
+list1
+```
+- Now we can store the a card from a card deck with lists:
+```{r}
+card <- list("ace", "hearts", 1)
+card
+```
+However things will get ugly when we try to do it for 52 of them. Luckly we have another data structure just to help that:
+
+### Data Frames
+- DataFrame is 2 dimensional version of lists.
+- Like an excel spreadsheets
+- Now let's make the deck:
+```{r}
+deck <- data.frame(
+  face = c("king", "queen", "jack", "ten", "nine", "eight", "seven", "six",
+    "five", "four", "three", "two", "ace", "king", "queen", "jack", "ten",
+    "nine", "eight", "seven", "six", "five", "four", "three", "two", "ace",
+    "king", "queen", "jack", "ten", "nine", "eight", "seven", "six", "five",
+    "four", "three", "two", "ace", "king", "queen", "jack", "ten", "nine",
+    "eight", "seven", "six", "five", "four", "three", "two", "ace"),
+  
+  suit = c("spades", "spades", "spades", "spades", "spades", "spades",
+    "spades", "spades", "spades", "spades", "spades", "spades", "spades",
+    "clubs", "clubs", "clubs", "clubs", "clubs", "clubs", "clubs", "clubs",
+    "clubs", "clubs", "clubs", "clubs", "clubs", "diamonds", "diamonds",
+    "diamonds", "diamonds", "diamonds", "diamonds", "diamonds", "diamonds",
+    "diamonds", "diamonds", "diamonds", "diamonds", "diamonds", "hearts",
+    "hearts", "hearts", "hearts", "hearts", "hearts", "hearts", "hearts",
+    "hearts", "hearts", "hearts", "hearts", "hearts"),
+  
+  value = c(13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 13, 12, 11, 10, 9, 8,
+    7, 6, 5, 4, 3, 2, 1, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 13, 12, 11,
+    10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+)
+```
+
+In the snippet above we manually added the data into dataframe, this is very small data and we don't usually add dataframes like this.
+
+It's more practical and more popular to load datasets from files that located in the computer. There are a lot of different file and data storage types and formats. Arguably the most famous one is CSV/TSV comma seperated values/tab seperated values file. 
+
+### Loading Data from File
+```{r}
+# mydata = read.csv("filename.csv") # Just a dummy example
+```
+
+### Saving Data to File
+```{r}
+# We are using write.csv function with deck data 
+#  specify the names and we did not want the row names.
+write.csv(deck, file = "cards.csv", row.names = FALSE) 
+```
+
+## Handling R Notation
+
+- We can select values from R objects, there is a specific notation.
+- The notation is using brackets:  ```deck[ , ]```
+- 2 indexes seperated by comma, 1st for row and 2nd for column
+- Passing positive integers are threated as ```ij``` notation in linear algebra
+
+```{r}
+head(deck)
+deck[1,1]
+```
+```{r}
+deck[1, c(1, 2, 3)] # We can pass vectors to get more
+```
+
+- Indexing in R begins at 1 unlike Python 0 indexing.
+- For more than 1 column and row it returns dataframe, but if select only column it returns vector, by passing ```drop=FALSE``` argument to indexing operation will avoid returning vector. 
+
+- If use negative index it will exclude that location
+```{r}
+deck[-1, 1:3] # Return everything but first row
+deck[-(2:52), 1:3] # Return only first row
+```
+- If leave row and/or column index blank it will take all the values for row and/or column
+- If object has names we can also index by passing names in vector:
+
+```{r}
+deck[ , "value"] # Return the entire value column
+```
+
+- To select a full column in dataframes using ```$``` is more convenient way.
+```{r}
+deck$value
+mean(deck$value) # Very convenient when it comes to descriptive stats
+```
+- In lists if the elements have names we can use the same convention, but if they don't we can use double brackets:
+```{r}
+lst <- list(numbers = c(1, 2), logical = TRUE, strings = c("a", "b", "c"))
+lst[1]
+# sum(lst[1]) # Will give error because returns list not vector
+lst$numbers
+lst[[1]]
+sum(lst[[1]]) # This will work because it returns list
+```
+
+## Modifying Content
+- Can modify the content of vector, dataframe by overwriting the selected location
+```{r}
+vec <- c(0, 0, 0, 0, 0, 0)
+vec
+vec[1] <- 1000
+vec
+```
+- Or passing multiple location and multiple value:
+```{r}
+vec[c(1, 3, 5)] <- c(1, 1, 1)
+vec
+```
+
+- Can add column and remove whole columns by this techniques in dataframes:
+```{r}
+deck2 <- deck
+deck2$new <- 1:52
+head(deck2)
+```
+```{r}
+deck2$new <- NULL # Simply passing NULL value to new column will drop it
+head(deck2)
+```
+- Using the same method for vectors, can modifiy specific locations on the column
+
+- ```%in%``` operator check if given value is in vector.
+```{r}
+sum(deck2$face == "ace")
+```
+```{r}
+deck[deck$face == "queen", ] # Nice way to subset
+```
+
+## Missing Info
+- ```NA``` special symbol for not available and it makes it impossible to work with vectors, we have to ignore or remove them.
+```{r}
+1+NA
+```
+```{r}
+mean(c(NA, 1:50))
+```
+- ```na.rm``` argument helps us ignore the NA values when using functions
+```{r}
+mean(c(NA, 1:50), na.rm = TRUE)
+```
+- To identify where NA in you dataset we use ```is.na``` function
+```{r}
+vec <- c(1, 2, 3, NA)
+is.na(vec)
+```

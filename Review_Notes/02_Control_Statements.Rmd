@@ -1,0 +1,50 @@
+---
+title: "Control Statements"
+author: "Enes Kemal Ergin"
+date: "6/4/2017"
+output: html_document
+---
+
+## if-else statement
+
+Syntax for is statement:
+
+```R
+if (this) {
+  that
+}
+```
+
+```{r}
+num <- -2
+if (num < 0){
+  print("num is negative.")
+  print("Don't worry, I'll fix it.")
+  num <- num * -1
+  print("Now num is positive.")
+  print(num)
+}
+```
+- When if does not work because condition statement returns false, we need a backup to execute if want to. ```else``` statement is the backup
+
+```R
+if (this) {
+  Plan A
+} else {
+  Plan B
+}
+```
+
+- Or can add more conditions using ```else if```:
+```{r}
+a <- 1
+b <- 1
+if (a > b) {
+  print("A wins!")
+} else if (a < b) {
+  print("B wins!")
+} else {
+  print("Tie.")
+}
+```
+
